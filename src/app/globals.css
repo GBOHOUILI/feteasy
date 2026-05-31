@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --scrollbar-w: 6px;
+    }
+
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: #27272a transparent;
+    }
+
+    *::-webkit-scrollbar {
+        width: var(--scrollbar-w);
+    }
+    *::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    *::-webkit-scrollbar-thumb {
+        background: #27272a;
+        border-radius: 9999px;
+    }
+
+    html {
+        scroll-behavior: smooth;
+        /* Base portée de 16px → 18px pour une lisibilité optimale à 100% de zoom.
+       Tout ce qui est en rem (textes, espacements) grossit proportionnellement
+       sans toucher une seule ligne de composant. */
+        font-size: 145%;
+    }
+
+    ::selection {
+        background: rgba(212, 160, 23, 0.2);
+        color: #d4a017;
+    }
+}
+
+@layer components {
+    /* Gold shimmer text */
+    .text-gold-shimmer {
+        background: linear-gradient(
+            120deg,
+            #b8860b 0%,
+            #d4a017 30%,
+            #f2d98b 50%,
+            #d4a017 70%,
+            #b8860b 100%
+        );
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: shimmer 3s linear infinite;
+    }
+
+    /* Decorative corner ornaments */
+    .ornament-corner {
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        opacity: 0.3;
+    }
+    .ornament-corner::before,
+    .ornament-corner::after {
+        content: "";
+        position: absolute;
+        background: #b8860b;
+    }
+    .ornament-corner::before {
+        width: 1px;
+        height: 100%;
+    }
+    .ornament-corner::after {
+        width: 100%;
+        height: 1px;
+    }
+
+    /* Gold divider */
+    .gold-divider {
+        width: 1px;
+        height: 2rem;
+        background: linear-gradient(
+            to bottom,
+            transparent,
+            #8b6914,
+            transparent
+        );
+        margin: 0 auto;
+        opacity: 0.5;
+    }
+}
