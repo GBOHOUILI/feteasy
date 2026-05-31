@@ -31,7 +31,7 @@ const UserSchema = new Schema<IUserDocument>(
     },
     avatar: { type: String },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Hash password before save
@@ -48,8 +48,8 @@ UserSchema.methods.comparePassword = async function (candidate: string) {
 // Never return password in JSON
 UserSchema.set("toJSON", {
   transform: (_doc, ret) => {
-    delete ret.password;
-    return ret;
+    const { password, ...safeUser } = ret;
+    return safeUser;
   },
 });
 
