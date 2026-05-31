@@ -27,6 +27,7 @@ export interface IEvent {
   slug: string;
   isPublished: boolean;
   maxGuests?: number;
+  brandingEnabled: boolean;
   createdAt: Date;
   updatedAt: Date;
 }

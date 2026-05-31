@@ -6,7 +6,10 @@ import { StatusBadge } from "@/components/ui/Badge";
 import { formatShortDate } from "@/lib/utils";
 import type { IEvent, IGuest } from "@/types";
 
-interface GuestWithEvent extends IGuest { eventTitle?: string; eventId: string }
+interface GuestWithEvent extends IGuest {
+  eventTitle?: string;
+  eventId: string;
+}
 
 export default function GuestsPage() {
   const [events, setEvents] = useState<IEvent[]>([]);
@@ -16,28 +19,33 @@ export default function GuestsPage() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    fetch("/api/events").then((r) => r.json()).then(async (d) => {
-      if (!d.success) { setLoading(false); return; }
-      const evs: IEvent[] = d.data;
-      setEvents(evs);
+    fetch("/api/events")
+      .then((r) => r.json())
+      .then(async (d) => {
+        if (!d.success) {
+          setLoading(false);
+          return;
+        }
+        const evs: IEvent[] = d.data;
+        setEvents(evs);
 
-      const guestPromises = evs.map((ev) =>
-        fetch(`/api/guests?eventId=${ev._id}`)
-          .then((r) => r.json())
-          .then((g) =>
-            g.success
-              ? (g.data as IGuest[]).map((guest) => ({
-                  ...guest,
-                  eventTitle: ev.title,
-                  eventId: ev._id,
-                }))
-              : []
-          )
-      );
-      const results = await Promise.all(guestPromises);
-      setAllGuests(results.flat());
-      setLoading(false);
-    });
+        const guestPromises = evs.map((ev) =>
+          fetch(`/api/guests?eventId=${ev._id}`)
+            .then((r) => r.json())
+            .then((g) =>
+              g.success
+                ? (g.data as IGuest[]).map((guest) => ({
+                    ...guest,
+                    eventTitle: ev.title,
+                    eventId: ev._id,
+                  }))
+                : [],
+            ),
+        );
+        const results = await Promise.all(guestPromises);
+        setAllGuests(results.flat());
+        setLoading(false);
+      });
   }, []);
 
   const filtered = allGuests.filter((g) => {
@@ -50,16 +58,18 @@ export default function GuestsPage() {
   });
 
   return (
-    <div className="p-8 max-w-5xl">
-      <div className="mb-8">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-5xl">
+      <div className="mb-6 sm:mb-8">
         <p className="text-[0.48rem] tracking-[0.36em] uppercase text-gold-700 mb-1 font-body font-light">
           Vue globale
         </p>
-        <h1 className="font-display font-light text-3xl text-white italic">Tous les invités</h1>
+        <h1 className="font-display font-light text-2xl sm:text-3xl text-white italic">
+          Tous les invités
+        </h1>
       </div>
 
       {/* Search + filter bar */}
-      <div className="flex gap-3 mb-6">
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <input
           type="text"
           placeholder="Rechercher par nom ou code…"
@@ -89,58 +99,115 @@ export default function GuestsPage() {
           {filtered.length === 0 ? (
             <div className="text-center py-14 flex flex-col items-center gap-3">
               <Users className="w-8 h-8 text-obsidian-700" />
-              <p className="text-obsidian-600 font-body font-light text-xs">Aucun invité trouvé</p>
+              <p className="text-obsidian-600 font-body font-light text-xs">
+                Aucun invité trouvé
+              </p>
             </div>
           ) : (
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-obsidian-800">
-                  {["Nom", "Code", "Événement", "Contact", "Statut", "Ajouté le"].map((h) => (
-                    <th key={h} className="text-left text-[0.44rem] tracking-[0.28em] uppercase text-obsidian-600 font-body font-light px-5 py-3.5">
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
+            <>
+              {/* Mobile cards */}
+              <div className="md:hidden divide-y divide-obsidian-800/50">
                 {filtered.map((g) => (
-                  <tr key={g._id} className="border-b border-obsidian-800/50 hover:bg-obsidian-800/20 transition-colors">
-                    <td className="px-5 py-3.5">
-                      <span className="font-display text-obsidian-200 italic text-sm">{g.fullName}</span>
-                    </td>
-                    <td className="px-5 py-3.5">
+                  <div key={g._id} className="p-4">
+                    <div className="flex items-start justify-between gap-3 mb-2">
+                      <div className="min-w-0 flex-1">
+                        <p className="font-display text-obsidian-200 italic text-sm truncate">
+                          {g.fullName}
+                        </p>
+                        <p className="text-[0.46rem] tracking-wide text-obsidian-600 font-body font-light mt-0.5">
+                          {g.phone || g.email || "—"}
+                        </p>
+                      </div>
+                      <StatusBadge status={g.status} />
+                    </div>
+                    <div className="flex items-center justify-between mt-2">
                       <span className="font-mono text-gold-600 text-xs bg-gold-950/20 border border-gold-900/30 px-2.5 py-1 rounded">
                         {g.code}
                       </span>
-                    </td>
-                    <td className="px-5 py-3.5">
                       <Link
                         href={`/dashboard/events/${g.eventId}`}
-                        className="flex items-center gap-1.5 text-[0.5rem] tracking-wide text-obsidian-500 hover:text-gold-500 transition-colors font-body font-light"
+                        className="flex items-center gap-1 text-[0.46rem] tracking-wide uppercase text-obsidian-500 hover:text-gold-500 transition-colors font-body font-light"
                       >
-                        {g.eventTitle}
-                        <ExternalLink className="w-2.5 h-2.5" />
+                        <span className="truncate max-w-[120px]">
+                          {g.eventTitle}
+                        </span>
+                        <ExternalLink className="w-2.5 h-2.5 flex-shrink-0" />
                       </Link>
-                    </td>
-                    <td className="px-5 py-3.5 text-[0.5rem] tracking-wide text-obsidian-600 font-body font-light">
-                      {g.phone || g.email || "—"}
-                    </td>
-                    <td className="px-5 py-3.5">
-                      <StatusBadge status={g.status} />
-                    </td>
-                    <td className="px-5 py-3.5 text-[0.46rem] tracking-widest uppercase text-obsidian-700 font-body font-light">
+                    </div>
+                    <p className="text-[0.44rem] tracking-widest uppercase text-obsidian-700 font-body font-light mt-2">
                       {formatShortDate(g.createdAt)}
-                    </td>
-                  </tr>
+                    </p>
+                  </div>
                 ))}
-              </tbody>
-            </table>
+              </div>
+
+              {/* Desktop table */}
+              <table className="hidden md:table w-full">
+                <thead>
+                  <tr className="border-b border-obsidian-800">
+                    {[
+                      "Nom",
+                      "Code",
+                      "Événement",
+                      "Contact",
+                      "Statut",
+                      "Ajouté le",
+                    ].map((h) => (
+                      <th
+                        key={h}
+                        className="text-left text-[0.44rem] tracking-[0.28em] uppercase text-obsidian-600 font-body font-light px-5 py-3.5"
+                      >
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((g) => (
+                    <tr
+                      key={g._id}
+                      className="border-b border-obsidian-800/50 hover:bg-obsidian-800/20 transition-colors"
+                    >
+                      <td className="px-5 py-3.5">
+                        <span className="font-display text-obsidian-200 italic text-sm">
+                          {g.fullName}
+                        </span>
+                      </td>
+                      <td className="px-5 py-3.5">
+                        <span className="font-mono text-gold-600 text-xs bg-gold-950/20 border border-gold-900/30 px-2.5 py-1 rounded">
+                          {g.code}
+                        </span>
+                      </td>
+                      <td className="px-5 py-3.5">
+                        <Link
+                          href={`/dashboard/events/${g.eventId}`}
+                          className="flex items-center gap-1.5 text-[0.5rem] tracking-wide text-obsidian-500 hover:text-gold-500 transition-colors font-body font-light"
+                        >
+                          {g.eventTitle}
+                          <ExternalLink className="w-2.5 h-2.5" />
+                        </Link>
+                      </td>
+                      <td className="px-5 py-3.5 text-[0.5rem] tracking-wide text-obsidian-600 font-body font-light">
+                        {g.phone || g.email || "—"}
+                      </td>
+                      <td className="px-5 py-3.5">
+                        <StatusBadge status={g.status} />
+                      </td>
+                      <td className="px-5 py-3.5 text-[0.46rem] tracking-widest uppercase text-obsidian-700 font-body font-light">
+                        {formatShortDate(g.createdAt)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
           )}
         </div>
       )}
 
       <p className="mt-4 text-[0.44rem] tracking-widest uppercase text-obsidian-700 font-body font-light text-right">
-        {filtered.length} invité{filtered.length !== 1 ? "s" : ""} affiché{filtered.length !== 1 ? "s" : ""}
+        {filtered.length} invité{filtered.length !== 1 ? "s" : ""} affiché
+        {filtered.length !== 1 ? "s" : ""}
       </p>
     </div>
   );

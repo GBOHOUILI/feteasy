@@ -28,7 +28,7 @@
         /* Base portée de 16px → 18px pour une lisibilité optimale à 100% de zoom.
        Tout ce qui est en rem (textes, espacements) grossit proportionnellement
        sans toucher une seule ligne de composant. */
-        font-size: 145%;
+        font-size: 130%;
     }
 
     ::selection {

@@ -59,14 +59,15 @@ export default function AdminPage() {
   const totalAdmins = users.filter((u) => u.role === "super_admin").length;
   const totalEvents = users.reduce((s, u) => s + u.eventCount, 0);
 
-  if (loading) return (
-    <div className="flex justify-center items-center min-h-64 p-8">
-      <div className="w-6 h-6 border border-gold-700/30 border-t-gold-500 rounded-full animate-spin" />
-    </div>
-  );
+  if (loading)
+    return (
+      <div className="flex justify-center items-center min-h-64 p-8">
+        <div className="w-6 h-6 border border-gold-700/30 border-t-gold-500 rounded-full animate-spin" />
+      </div>
+    );
 
   return (
-    <div className="p-8 max-w-5xl">
+    <div className="p-4 md:p-8 max-w-5xl">
       <div className="mb-8">
         <p className="text-[0.48rem] tracking-[0.36em] uppercase text-gold-700 mb-1 font-body font-light">
           Espace super administrateur
@@ -80,8 +81,17 @@ export default function AdminPage() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4 mb-10">
         <StatCard label="Organisateurs" value={totalOrganizers} icon={Users} />
-        <StatCard label="Super admins" value={totalAdmins} icon={Crown} accent />
-        <StatCard label="Événements total" value={totalEvents} icon={Calendar} />
+        <StatCard
+          label="Super admins"
+          value={totalAdmins}
+          icon={Crown}
+          accent
+        />
+        <StatCard
+          label="Événements total"
+          value={totalEvents}
+          icon={Calendar}
+        />
       </div>
 
       {/* Users table */}
@@ -95,7 +105,14 @@ export default function AdminPage() {
         <table className="w-full">
           <thead>
             <tr className="border-b border-obsidian-800">
-              {["Nom", "Email", "Rôle", "Événements", "Inscrit le", "Actions"].map((h) => (
+              {[
+                "Nom",
+                "Email",
+                "Rôle",
+                "Événements",
+                "Inscrit le",
+                "Actions",
+              ].map((h) => (
                 <th
                   key={h}
                   className="text-left text-[0.44rem] tracking-[0.28em] uppercase text-obsidian-600 font-body font-light px-5 py-3.5"
@@ -128,7 +145,9 @@ export default function AdminPage() {
                   <RoleBadge role={user.role} />
                 </td>
                 <td className="px-5 py-4">
-                  <span className="font-display text-lg text-gold-600">{user.eventCount}</span>
+                  <span className="font-display text-lg text-gold-600">
+                    {user.eventCount}
+                  </span>
                 </td>
                 <td className="px-5 py-4 text-[0.48rem] tracking-widest uppercase text-obsidian-700 font-body font-light">
                   {formatShortDate(user.createdAt)}
@@ -136,11 +155,15 @@ export default function AdminPage() {
                 <td className="px-5 py-4">
                   {user._id !== session?.user.id && (
                     <Button
-                      variant={user.role === "super_admin" ? "danger" : "outline"}
+                      variant={
+                        user.role === "super_admin" ? "danger" : "outline"
+                      }
                       size="sm"
                       onClick={() => toggleRole(user._id, user.role)}
                     >
-                      {user.role === "super_admin" ? "Rétrograder" : "Promouvoir admin"}
+                      {user.role === "super_admin"
+                        ? "Rétrograder"
+                        : "Promouvoir admin"}
                     </Button>
                   )}
                 </td>
@@ -148,7 +171,10 @@ export default function AdminPage() {
             ))}
             {users.length === 0 && (
               <tr>
-                <td colSpan={6} className="text-center py-12 text-obsidian-600 font-body font-light text-xs">
+                <td
+                  colSpan={6}
+                  className="text-center py-12 text-obsidian-600 font-body font-light text-xs"
+                >
                   Aucun utilisateur
                 </td>
               </tr>

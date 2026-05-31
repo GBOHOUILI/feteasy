@@ -15,6 +15,7 @@ export interface IEventDocument extends Document {
   slug: string;
   isPublished: boolean;
   maxGuests?: number;
+  brandingEnabled: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -44,8 +45,9 @@ const EventSchema = new Schema<IEventDocument>(
     slug: { type: String, required: true, unique: true, lowercase: true },
     isPublished: { type: Boolean, default: false },
     maxGuests: { type: Number, min: 1 },
+    brandingEnabled: { type: Boolean, default: true },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const Event: Model<IEventDocument> =

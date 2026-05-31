@@ -11,11 +11,19 @@ interface ModalProps {
   size?: "sm" | "md" | "lg";
 }
 
-export function Modal({ open, onClose, title, children, size = "md" }: ModalProps) {
+export function Modal({
+  open,
+  onClose,
+  title,
+  children,
+  size = "md",
+}: ModalProps) {
   useEffect(() => {
     if (open) document.body.style.overflow = "hidden";
     else document.body.style.overflow = "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [open]);
 
   if (!open) return null;
@@ -32,11 +40,12 @@ export function Modal({ open, onClose, title, children, size = "md" }: ModalProp
         className={cn(
           "relative w-full bg-obsidian-900 border border-obsidian-800",
           "rounded-2xl shadow-2xl animate-fade-up",
-          sizes[size]
+          "max-h-[90vh] flex flex-col",
+          sizes[size],
         )}
       >
         {title && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-obsidian-800">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-obsidian-800 flex-shrink-0">
             <h3 className="font-body text-sm font-light tracking-widest uppercase text-obsidian-300">
               {title}
             </h3>
@@ -48,7 +57,7 @@ export function Modal({ open, onClose, title, children, size = "md" }: ModalProp
             </button>
           </div>
         )}
-        <div className="p-6">{children}</div>
+        <div className="p-6 overflow-y-auto">{children}</div>
       </div>
     </div>
   );

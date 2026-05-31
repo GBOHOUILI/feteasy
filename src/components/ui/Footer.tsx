@@ -5,15 +5,15 @@ export function Footer() {
 
   return (
     <footer className="border-t border-obsidian-900 bg-obsidian-950">
-      <div className="max-w-6xl mx-auto px-8 py-16">
+      <div className="max-w-6xl mx-auto px-4 sm:px-8 py-12 sm:py-16">
         {/* Top row */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
-          {/* Brand */}
-          <div className="md:col-span-1">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10 mb-10 sm:mb-12">
+          {/* Brand — full width on mobile */}
+          <div className="col-span-2 md:col-span-1">
             <span className="font-display text-2xl italic text-gold-400 tracking-wide block mb-3">
               FêtEasy
             </span>
-            <p className="text-obsidian-500 font-body font-light text-xs leading-relaxed">
+            <p className="text-obsidian-500 font-body font-light text-xs leading-relaxed max-w-xs">
               La plateforme d&apos;invitations numériques de prestige pour vos
               événements privés.
             </p>
@@ -95,10 +95,10 @@ export function Footer() {
         </div>
 
         {/* Divider */}
-        <div className="h-px bg-gradient-to-r from-transparent via-obsidian-800 to-transparent mb-8" />
+        <div className="h-px bg-gradient-to-r from-transparent via-obsidian-800 to-transparent mb-6 sm:mb-8" />
 
         {/* Bottom row */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
           <p className="text-[0.44rem] tracking-[0.28em] uppercase text-obsidian-700 font-body font-light">
             © {year} FêtEasy · Tous droits réservés
           </p>
